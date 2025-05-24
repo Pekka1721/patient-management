@@ -6,11 +6,10 @@ import com.pm.patientservice.dto.PatientResponseDTO;
 import com.pm.patientservice.exception.EmailAlreadyExistsExecption;
 import com.pm.patientservice.exception.PatientNotFoundException;
 import com.pm.patientservice.grpc.BillingServiceGrpcClient;
+import com.pm.patientservice.kafka.KafkaProducer;
 import com.pm.patientservice.mapper.PatientMapper;
 import com.pm.patientservice.model.Patient;
 import com.pm.patientservice.repository.PatientRepository;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import com.pm.patientservice.kafka.KafkaProducer;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -43,9 +42,8 @@ public class PatientService {
             throw new EmailAlreadyExistsExecption("A patient with this email "+"already exists "+ patientRequestDTO.getEmail());
         }
         Patient newPatient = patientRepository.save(PatientMapper.toModel(patientRequestDTO));
-        billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(),newPatient.getName(),newPatient.getEmail());
-
-        kafkaProducer.sendMessage(newPatient);
+        billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(),newPatient.getName(),newPatient.getEmail()); //grpc
+        kafkaProducer.sendEvent(newPatient);  //kafka event
         return PatientMapper.toDTO(newPatient);
     }
 
