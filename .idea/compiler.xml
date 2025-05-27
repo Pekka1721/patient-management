@@ -20,10 +20,14 @@
         <module name="billing-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="api-gateway" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="analytics-service" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="billing-service" options="-parameters" />
       <module name="patient-service" options="-parameters" />
     </option>

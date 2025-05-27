@@ -1,0 +1,16 @@
+server:
+  port: 4004
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: patient-service-route
+          uri: http://patient-service:4000
+          predicates:
+            - Path=/api/patients/**
+          filters:
+            - StripPrefix=1
+        ## REST Client => http://localhost:4004/api/patients   this is the api gateway url to be exposed
+        ## API Gateway => http://patient-service:4000/patients   gateway will route to this url internally
+        ##Patient service -> /patients ->Patients Array
